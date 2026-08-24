@@ -63,8 +63,6 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 This isn't an engine in the traditional sense. There is no editor. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
