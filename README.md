@@ -70,7 +70,8 @@ This isn't an engine in the traditional sense. There is no editor.
 ### Built With
 This section lists all vendors and tools IronHull was built using.
 
-* C++ 20
+* C++20
+* C17
 * OpenGL 3.3
 * [CMake](https://cmake.org/) 
 * [RayLib](https://www.raylib.com/)

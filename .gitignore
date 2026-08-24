@@ -1,0 +1,27 @@
+#--------------------------#
+#  CMake Specific Ignores  #
+#--------------------------#
+compile_commands.json
+out/
+bin/
+lib/
+
+#---------------------------#
+#  Clangd Specific Ignores  #
+#---------------------------#
+.cache/
+
+#---------------------------#
+#  Editor Specific Ignores  # 
+#---------------------------#
+.vscode/
+
+#-----------------------#
+#  OS Specific Ignores  #
+#-----------------------#
+.DS_Store
+
+#-----------------#
+#  Other Ignores  #
+#-----------------#
+imgui.ini
