@@ -7,7 +7,7 @@ class SandboxApp : public IronHull::Application
     protected:
         void on_compose() override
         {
-
+            
         }
 
         void on_ready() override
