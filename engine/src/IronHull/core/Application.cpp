@@ -98,13 +98,11 @@ namespace IronHull
 
                 this->draw(RenderPass::SCREEN);
 
-                if (Application::is_debug()) {
-                    rlImGuiBegin();
-                    {
-                        this->draw(RenderPass::DEBUG);
-                    }
-                    rlImGuiEnd();
+                rlImGuiBegin();
+                {
+                    this->draw(RenderPass::DEBUG);
                 }
+                rlImGuiEnd();
             }
             EndDrawing();
         }
