@@ -1,4 +1,5 @@
 #include "IronHull/render/RenderPass.hpp"
+#include "IronHull/scene/SceneManager.hpp"
 #include <IronHull/core/Application.hpp>
 
 #include <raylib.h>
@@ -17,8 +18,9 @@ namespace IronHull
     {
 #ifdef NDEBUG
         return false;
-#endif        
+#else
         return true;
+#endif        
     }
 
     int Application::get_window_width()
@@ -138,21 +140,25 @@ namespace IronHull
 
     void Application::ready()
     {
+        SceneManager::ready();
         this->on_ready();
     }
 
     void Application::update(float delta)
     {
+        SceneManager::update(delta);
         this->on_update(delta);
     }
 
     void Application::draw(RenderPass pass)
     {
+        SceneManager::draw(pass);
         this->on_draw(pass);
     }
 
     void Application::dispose()
     {
+        SceneManager::dispose();
         rlImGuiShutdown();
         this->on_dispose();
         CloseAudioDevice();
