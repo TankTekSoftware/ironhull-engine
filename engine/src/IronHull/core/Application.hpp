@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IronHull/render/RenderPass.hpp"
 #include <corecrt.h>
 #include <string>
 
@@ -27,6 +28,7 @@ namespace IronHull
             static Application* instance;
         private:
             bool is_running;
+            std::string project_name;
         protected:
             Window window;
             Viewport viewport;
@@ -44,6 +46,16 @@ namespace IronHull
         public:
             void run();
         private:
-
+            void compose();
+            void ready();
+            void update(float delta);
+            void draw(RenderPass pass);
+            void dispose();
+        protected:
+            virtual void on_compose() { }
+            virtual void on_ready() { }
+            virtual void on_update(float delta) { } 
+            virtual void on_draw(RenderPass pass) { }
+            virtual void on_dispose() { }
     };
 }

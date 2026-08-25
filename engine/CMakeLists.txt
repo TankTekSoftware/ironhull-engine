@@ -12,15 +12,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(raylib)
 
-message(STATUS "Fetching physfs...")
-FetchContent_Declare(
-    physfs
-    GIT_REPOSITORY "https://github.com/icculus/physfs.git"
-    GIT_TAG "main"
-)
-FetchContent_MakeAvailable(physfs)
-
-
 file(GLOB_RECURSE CORE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/IronHull/core/*.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${CORE_SOURCES})
@@ -33,6 +24,5 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         raylib 
-        physfs-static
         imgui
 )
