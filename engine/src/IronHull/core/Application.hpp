@@ -28,10 +28,10 @@ namespace IronHull
             static Application* instance;
         private:
             bool is_running;
-            std::string project_name;
         protected:
             Window window;
             Viewport viewport;
+            std::string project_name;
         public:
             static void quit();
             static bool is_debug();

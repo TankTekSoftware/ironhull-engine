@@ -1,3 +1,5 @@
+#include "IronHull/asset/AssetRegistry.hpp"
+#include "IronHull/io/FileSystem.hpp"
 #include "IronHull/render/RenderPass.hpp"
 #include "IronHull/scene/SceneManager.hpp"
 #include <IronHull/core/Application.hpp>
@@ -114,6 +116,8 @@ namespace IronHull
     {
         this->on_compose();
 
+        FileSystem::init(this->project_name);
+
         unsigned int flags = 0;
         if (this->window.resizable) {
             flags |= FLAG_WINDOW_RESIZABLE;
@@ -159,8 +163,11 @@ namespace IronHull
     void Application::dispose()
     {
         SceneManager::dispose();
-        rlImGuiShutdown();
         this->on_dispose();
+
+        AssetRegistry::dispose();
+        FileSystem::shutdown();
+        rlImGuiShutdown();
         CloseAudioDevice();
         CloseWindow();
     }
