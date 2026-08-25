@@ -48,7 +48,7 @@ namespace IronHull
     void Application::run()
     {
         Application::instance = this;
-        this->is_running = false;
+        this->is_running = true;
         this->window = { 0 };
         this->window.width = 1280;
         this->window.height = 720;

@@ -58,4 +58,6 @@ namespace IronHull
             virtual void on_draw(RenderPass pass) { }
             virtual void on_dispose() { }
     };
+
+    Application* create_application();
 }

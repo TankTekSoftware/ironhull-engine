@@ -72,7 +72,6 @@ This section lists all vendors and tools IronHull was built using.
 
 * C++20
 * C17
-* OpenGL 3.3
 * [CMake](https://cmake.org/) 
 * [RayLib](https://www.raylib.com/)
 
@@ -108,9 +107,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- CONTACT -->
 ## Contact
-Michael Smith - msmith@tankteksoftware.com
-Aidenn Shay - ashay@tankteksoftware.com
-Zach Clawson - zclawson@tankteksoftware.com
+* Michael Smith - msmith@tankteksoftware.com
+* Aidenn Shay - ashay@tankteksoftware.com
+* Zach Clawson - zclawson@tankteksoftware.com
 
 Project Link: [https://github.com/TankTekSoftware/ironhull-engine](https://github.com/TankTekSoftware/ironhull-engine)
 

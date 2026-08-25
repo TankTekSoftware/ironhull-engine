@@ -38,3 +38,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${PLATFORM_DIR}-${BUI
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/sandbox/)
