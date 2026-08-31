@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IronHull/render/RenderPass.hpp"
-#include <corecrt.h>
 #include <string>
 
 namespace IronHull
