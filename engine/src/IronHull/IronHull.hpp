@@ -6,6 +6,8 @@
 
 #include <IronHull/render/RenderPass.hpp>
 
+#include <IronHull/scene/Scene.hpp>
+#include <IronHull/scene/SceneManager.hpp>
 #include <IronHull/scene/Layer.hpp>
 
 #include <IronHull/utils/ColorUtils.hpp>
