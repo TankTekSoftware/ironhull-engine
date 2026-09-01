@@ -72,8 +72,13 @@ This section lists all vendors and tools IronHull was built using.
 
 * C++20
 * C17
+* [Emscripten](https://emscripten.org/)
+* [Ninja](https://ninja-build.org/)
 * [CMake](https://cmake.org/) 
 * [RayLib](https://www.raylib.com/)
+* [Box2D](https://box2d.org/)
+* [PhysFS](https://icculus.org/physfs/)
+* [ImGui](https://github.com/ocornut/imgui)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

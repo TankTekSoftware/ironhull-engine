@@ -34,6 +34,7 @@ namespace IronHull
             static Application* instance;
         private:
             bool is_running;
+            RenderTexture2D target;
         protected:
             Window window;
             Viewport viewport;
@@ -57,6 +58,10 @@ namespace IronHull
             void update(float delta);
             void draw(RenderPass pass);
             void dispose();
+            void frame();
+#if defined(PLATFORM_WEB)
+            static void web_frame(void* arg);
+#endif
         protected:
             virtual void on_compose() { }
             virtual void on_ready() { }

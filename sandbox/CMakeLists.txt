@@ -14,3 +14,14 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         IronHullFramework
 )
+
+# Emscripten executables default to a bare ".js" glue script; ".html" gets emcc to also
+# generate a minimal page with a <canvas> that loads it, which is what's actually meant to
+# be opened/served.
+if(PLATFORM STREQUAL "Web")
+    set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
+
+    target_link_options(${PROJECT_NAME} PRIVATE
+        -sALLOW_MEMORY_GROWTH=1
+    )
+endif()

@@ -7,6 +7,10 @@
 #include <raylib.h>
 #include <rlImGui.h>
 
+#if defined(PLATFORM_WEB)
+#include <emscripten.h>
+#endif
+
 namespace IronHull
 {
     Application* Application::instance = nullptr;
@@ -65,57 +69,93 @@ namespace IronHull
 
         this->project_name = "IronHullGame";
 
-        this->compose(); 
-        RenderTexture2D target = LoadRenderTexture(this->viewport.width, this->viewport.height);
+        this->compose();
+        this->target = LoadRenderTexture(this->viewport.width, this->viewport.height);
 
         this->ready();
 
+#if defined(PLATFORM_WEB)
+        // The browser owns the event loop on web: a blocking while-loop like the desktop one
+        // below would never yield back to it, freezing the tab and starving rendering/input.
+        // emscripten_set_main_loop_arg() instead hands it a per-frame callback and unwinds
+        // the stack out of run() (and main()) without running anything after this call -
+        // Application::web_frame() takes over as the loop and calls dispose() itself once
+        // the app stops running.
+        emscripten_set_main_loop_arg(&Application::web_frame, this, 0, true);
+#else
         while (!WindowShouldClose() && this->is_running) {
-            float delta = GetFrameTime();
-            this->update(delta);
-
-            if (IsWindowResized()) {
-                this->window.width = GetScreenWidth();
-                this->window.height = GetScreenHeight();
-            }
-
-            Rectangle sourceRect = { 
-                0.0f, 0.0f, 
-                static_cast<float>(target.texture.width), 
-                static_cast<float>(-target.texture.height) 
-            };
-
-            Rectangle destRect = { 
-                0.0f, 0.0f, 
-                static_cast<float>(Application::get_window().width), 
-                static_cast<float>(Application::get_window().height) 
-            };
-
-            BeginTextureMode(target);
-            {
-                ClearBackground(BLACK);
-                this->draw(RenderPass::VIEWPORT);
-            }
-            EndTextureMode();
-
-            BeginDrawing();
-            {
-                ClearBackground(BLACK);
-                DrawTexturePro(target.texture, sourceRect, destRect, { 0.0f, 0.0f }, 0.0f, WHITE);
-
-                this->draw(RenderPass::SCREEN);
-
-                rlImGuiBegin();
-                {
-                    this->draw(RenderPass::DEBUG);
-                }
-                rlImGuiEnd();
-            }
-            EndDrawing();
+            this->frame();
         }
 
         this->dispose();
+#endif
     }
+
+    void Application::frame()
+    {
+        float delta = GetFrameTime();
+        this->update(delta);
+
+        if (IsWindowResized()) {
+            this->window.width = GetScreenWidth();
+            this->window.height = GetScreenHeight();
+        }
+
+        Rectangle sourceRect = {
+            0.0f, 0.0f,
+            static_cast<float>(this->target.texture.width),
+            static_cast<float>(-this->target.texture.height)
+        };
+
+        Rectangle destRect = {
+            0.0f, 0.0f,
+            static_cast<float>(Application::get_window().width),
+            static_cast<float>(Application::get_window().height)
+        };
+
+        BeginTextureMode(this->target);
+        {
+            ClearBackground(BLACK);
+            this->draw(RenderPass::VIEWPORT);
+        }
+        EndTextureMode();
+
+        BeginDrawing();
+        {
+            ClearBackground(BLACK);
+            DrawTexturePro(this->target.texture, sourceRect, destRect, { 0.0f, 0.0f }, 0.0f, WHITE);
+
+            this->draw(RenderPass::SCREEN);
+
+            rlImGuiBegin();
+            {
+                this->draw(RenderPass::DEBUG);
+            }
+            rlImGuiEnd();
+        }
+        EndDrawing();
+    }
+
+#if defined(PLATFORM_WEB)
+    void Application::web_frame(void* arg)
+    {
+        Application* self = static_cast<Application*>(arg);
+
+        // Deliberately not calling WindowShouldClose() here: raylib's web backend implements
+        // it with an internal emscripten_sleep() (to give control back to the browser in the
+        // synchronous while-loop porting pattern), which requires the binary to be built with
+        // -sASYNCIFY - without it, the very first call aborts the module. It always returns
+        // false anyway when driven via emscripten_set_main_loop_arg() like this, so is_running
+        // is the only real quit signal on web.
+        if (!self->is_running) {
+            emscripten_cancel_main_loop();
+            self->dispose();
+            return;
+        }
+
+        self->frame();
+    }
+#endif
 
     void Application::compose()
     {

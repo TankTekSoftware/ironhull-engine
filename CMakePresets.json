@@ -26,6 +26,28 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "PLATFORM": "Desktop"
             }
+        },
+        {
+            "name": "web-debug",
+            "displayName": "Web (Debug)",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "toolchainFile": "${sourceDir}/cmake/web.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "PLATFORM": "Web"
+            }
+        },
+        {
+            "name": "web-release",
+            "displayName": "Web (Release)",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "toolchainFile": "${sourceDir}/cmake/web.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "PLATFORM": "Web"
+            }
         }
     ],
     "buildPresets": [
@@ -36,6 +58,14 @@
         {
             "name": "desktop-release",
             "configurePreset": "desktop-release"
+        },
+        {
+            "name": "web-debug",
+            "configurePreset": "web-debug"
+        },
+        {
+            "name": "web-release",
+            "configurePreset": "web-release"
         }
     ]
 }
