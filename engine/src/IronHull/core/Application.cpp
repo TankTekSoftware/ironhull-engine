@@ -81,8 +81,17 @@ namespace IronHull
                 this->window.height = GetScreenHeight();
             }
 
-            Rectangle sourceRect = { 0.0f, 0.0f, static_cast<float>(target.texture.width), static_cast<float>(-target.texture.height) };
-            Rectangle destRect = { 0.0f, 0.0f, static_cast<float>(Application::get_window_width()), static_cast<float>(Application::get_window_height()) };
+            Rectangle sourceRect = { 
+                0.0f, 0.0f, 
+                static_cast<float>(target.texture.width), 
+                static_cast<float>(-target.texture.height) 
+            };
+
+            Rectangle destRect = { 
+                0.0f, 0.0f, 
+                static_cast<float>(Application::get_window_width()), 
+                static_cast<float>(Application::get_window_height()) 
+            };
 
             BeginTextureMode(target);
             {
