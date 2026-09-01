@@ -12,6 +12,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(raylib)
 
+message(STATUS "Fetcing physfs...")
+set(PHYSFS_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+set(PHYSFS_BUILD_STATIC ON CACHE BOOL "" FORCE)
+set(PHYSFS_BUILD_TEST OFF CACHE BOOL "" FORCE)
+set(PHYSFS_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(PHYSFS_INSTALL OFF CACHE BOOL "" FORCE)
+FetchContent_Declare(
+    physfs
+    GIT_REPOSITORY "https://github.com/icculus/physfs.git"
+    GIT_TAG "main"
+)
+FetchContent_MakeAvailable(physfs)
+
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
@@ -22,6 +35,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        raylib 
+        raylib
         imgui
+        PhysFS::PhysFS-static
 )

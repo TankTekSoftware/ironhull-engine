@@ -11,7 +11,7 @@ namespace IronHull
     // transparently.
     //
     //   assets://path  Read-only, packaged with the app: a loose "assets/" directory next
-    //                   to the executable in debug builds, or a miniz-read "assets.pck" zip
+    //                   to the executable in debug builds, or a PhysFS-mounted "assets.ihpk"
     //                   archive next to the executable in release (NDEBUG) builds.
     //
     //   user://path     Writable, per-user application data directory:

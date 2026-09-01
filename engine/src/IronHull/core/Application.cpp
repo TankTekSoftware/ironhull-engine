@@ -129,6 +129,10 @@ namespace IronHull
         InitWindow(this->window.width, this->window.height, this->window.title.c_str());
         InitAudioDevice();
         SetExitKey(KEY_NULL);
+
+        if (this->window.target_fps == 0) {
+            this->window.target_fps = GetMonitorRefreshRate(GetCurrentMonitor());  
+        }
         SetTargetFPS(this->window.target_fps);
 
         if (this->window.fullscreen) {

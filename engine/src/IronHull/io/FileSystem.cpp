@@ -6,19 +6,18 @@
 #include <fstream>
 #include <stdexcept>
 
-#include <miniz/miniz.h>
+#include <physfs.h>
 #include <raylib.h>
 
 namespace IronHull
 {
     namespace
     {
-        // Backing store for "assets://". Exactly one of these is active after init():
-        // debug builds read loose files straight off disk (g_assets_dir), release (NDEBUG)
-        // builds read out of a miniz-opened "assets.pak" zip archive (g_assets_archive).
-        std::string g_assets_dir;
-        mz_zip_archive g_assets_archive{};
-        bool g_assets_archive_open = false;
+        // Backing store for "assets://": a loose "assets/" directory in debug builds, or an
+        // "assets.ihpk" archive in release (NDEBUG) builds, mounted at PhysFS's virtual root
+        // by init(). PhysFS auto-detects the archive format, so the same mount/read calls
+        // work for both cases.
+        bool g_assets_mounted = false;
 
         // Backing store for "user://": a plain writable directory on disk.
         std::string g_user_dir;
@@ -56,11 +55,6 @@ namespace IronHull
             return g_user_dir + "/" + relative_path;
         }
 
-        std::string loose_assets_disk_path(const std::string& relative_path)
-        {
-            return g_assets_dir + "/" + relative_path;
-        }
-
         bool read_disk_file(const std::string& path, std::vector<unsigned char>& out)
         {
             std::ifstream file(path, std::ios::binary | std::ios::ate);
@@ -86,38 +80,57 @@ namespace IronHull
             return true;
         }
 
-        std::vector<unsigned char> read_archive_file(const std::string& uri, const std::string& relative_path)
+        std::vector<unsigned char> read_assets_file(const std::string& uri, const std::string& relative_path)
         {
-            size_t size = 0;
-            void* buffer = mz_zip_reader_extract_file_to_heap(&g_assets_archive, relative_path.c_str(), &size, 0);
-            if (buffer == nullptr) {
-                throw std::runtime_error("FileSystem: failed to read '" + uri + "' from assets archive: " +
-                    mz_zip_get_error_string(mz_zip_get_last_error(&g_assets_archive)));
+            PHYSFS_File* file = PHYSFS_openRead(relative_path.c_str());
+            if (file == nullptr) {
+                throw std::runtime_error("FileSystem: failed to read '" + uri + "' from assets: " +
+                    PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
             }
 
-            std::vector<unsigned char> data(static_cast<unsigned char*>(buffer), static_cast<unsigned char*>(buffer) + size);
-            mz_free(buffer);
+            PHYSFS_sint64 length = PHYSFS_fileLength(file);
+            if (length < 0) {
+                PHYSFS_close(file);
+                throw std::runtime_error("FileSystem: failed to determine length of '" + uri + "'");
+            }
+
+            std::vector<unsigned char> data(static_cast<size_t>(length));
+
+            if (length > 0) {
+                PHYSFS_sint64 read = PHYSFS_readBytes(file, data.data(), static_cast<PHYSFS_uint64>(length));
+                if (read != length) {
+                    std::string error = PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode());
+                    PHYSFS_close(file);
+                    throw std::runtime_error("FileSystem: failed to read '" + uri + "' from assets: " + error);
+                }
+            }
+
+            PHYSFS_close(file);
             return data;
         }
     }
 
     void FileSystem::init(const std::string& project_name)
     {
+        if (!PHYSFS_init(nullptr)) {
+            TraceLog(LOG_WARNING, "FILESYSTEM: Failed to initialize PhysFS: %s",
+                PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+        }
+
         std::string app_dir = GetApplicationDirectory();
 
 #ifdef NDEBUG
-        std::string assets_pack = app_dir + "assets.ihpk";
-
-        std::memset(&g_assets_archive, 0, sizeof(g_assets_archive));
-        if (mz_zip_reader_init_file(&g_assets_archive, assets_pack.c_str(), 0)) {
-            g_assets_archive_open = true;
-        } else {
-            TraceLog(LOG_WARNING, "FILESYSTEM: Failed to open assets archive '%s': %s", assets_pack.c_str(),
-                mz_zip_get_error_string(mz_zip_get_last_error(&g_assets_archive)));
-        }
+        std::string assets_source = app_dir + "assets.ihpk";
 #else
-        g_assets_dir = app_dir + "assets";
+        std::string assets_source = app_dir + "assets";
 #endif
+
+        if (PHYSFS_mount(assets_source.c_str(), "/", 1)) {
+            g_assets_mounted = true;
+        } else {
+            TraceLog(LOG_WARNING, "FILESYSTEM: Failed to mount assets '%s': %s", assets_source.c_str(),
+                PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+        }
 
         g_user_dir = FileSystem::user_data_directory(project_name);
 
@@ -141,12 +154,9 @@ namespace IronHull
         SetLoadFileTextCallback(nullptr);
         SetSaveFileTextCallback(nullptr);
 
-        if (g_assets_archive_open) {
-            mz_zip_reader_end(&g_assets_archive);
-            g_assets_archive_open = false;
-        }
+        PHYSFS_deinit();
+        g_assets_mounted = false;
 
-        g_assets_dir.clear();
         g_user_dir.clear();
     }
 
@@ -171,12 +181,7 @@ namespace IronHull
         ParsedUri parsed = parse_uri(uri);
 
         if (parsed.protocol == Protocol::Assets) {
-            if (g_assets_archive_open) {
-                return mz_zip_reader_locate_file(&g_assets_archive, parsed.relative_path.c_str(), nullptr, 0) >= 0;
-            }
-
-            std::error_code ec;
-            return std::filesystem::exists(loose_assets_disk_path(parsed.relative_path), ec);
+            return g_assets_mounted && PHYSFS_exists(parsed.relative_path.c_str()) != 0;
         }
 
         std::error_code ec;
@@ -188,15 +193,11 @@ namespace IronHull
         ParsedUri parsed = parse_uri(uri);
 
         if (parsed.protocol == Protocol::Assets) {
-            if (g_assets_archive_open) {
-                return read_archive_file(uri, parsed.relative_path);
+            if (!g_assets_mounted) {
+                throw std::runtime_error("FileSystem: failed to read '" + uri + "': assets are not mounted");
             }
 
-            std::vector<unsigned char> data;
-            if (!read_disk_file(loose_assets_disk_path(parsed.relative_path), data)) {
-                throw std::runtime_error("FileSystem: failed to read '" + uri + "'");
-            }
-            return data;
+            return read_assets_file(uri, parsed.relative_path);
         }
 
         std::vector<unsigned char> data;
