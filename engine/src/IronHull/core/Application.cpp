@@ -25,28 +25,22 @@ namespace IronHull
 #endif        
     }
 
-    int Application::get_window_width()
+    Window Application::get_window()
     {
         Application* self = Application::instance;
-        return self->window.width; 
+        return self->instance->window;
     }
 
-    int Application::get_window_height()
+    Viewport Application::get_viewport()
     {
         Application* self = Application::instance;
-        return self->window.height;
+        return self->instance->viewport;
     }
 
-    int Application::get_viewport_width()
+    Physics2DSettings Application::get_physics2d()
     {
         Application* self = Application::instance;
-        return self->viewport.width;
-    }
-    
-    int Application::get_viewport_height()
-    {
-        Application* self = Application::instance;
-        return self->viewport.height;
+        return self->instance->physics_2d;
     }
 
     void Application::run()
@@ -64,6 +58,10 @@ namespace IronHull
         this->viewport = { 0 };
         this->viewport.width = 1280;
         this->viewport.height = 720;
+
+        this->physics_2d = { 0 };
+        this->physics_2d.gravity = { 0.0f, 9.8f };
+        this->physics_2d.pixels_per_unit = 32.0f;
 
         this->project_name = "IronHullGame";
 
@@ -89,8 +87,8 @@ namespace IronHull
 
             Rectangle destRect = { 
                 0.0f, 0.0f, 
-                static_cast<float>(Application::get_window_width()), 
-                static_cast<float>(Application::get_window_height()) 
+                static_cast<float>(Application::get_window().width), 
+                static_cast<float>(Application::get_window().height) 
             };
 
             BeginTextureMode(target);
