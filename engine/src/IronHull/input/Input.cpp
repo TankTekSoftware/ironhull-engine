@@ -1,5 +1,7 @@
 #include <IronHull/input/Input.hpp>
 
+#include <algorithm>
+
 namespace IronHull
 {
     namespace
@@ -7,26 +9,17 @@ namespace IronHull
         constexpr int GAMEPAD_ID = 0;
         constexpr float GAMEPAD_AXIS_DEADZONE = 0.5f;
 
-        // A freshly registered action starts with every binding "unset" so that
-        // registering one input type (e.g. a key) doesn't accidentally make the
-        // action also respond to gamepad button 0, mouse button 0, gamepad axis 0, etc.
-        InputAction make_unbound_action()
-        {
-            InputAction action{};
-            action.key = KEY_NULL;
-            action.mouse = static_cast<MouseButton>(-1);
-            action.gamepad_button = GAMEPAD_BUTTON_UNKNOWN;
-            action.gamepad_axis = static_cast<GamepadAxis>(-1);
-            return action;
-        }
-
         InputAction& get_or_create_action(std::unordered_map<std::string, InputAction>& actions, const std::string& action)
         {
-            auto it = actions.find(action);
-            if (it == actions.end()) {
-                it = actions.emplace(action, make_unbound_action()).first;
+            return actions[action];
+        }
+
+        template <typename T>
+        void add_binding(std::vector<T>& bindings, T value)
+        {
+            if (std::find(bindings.begin(), bindings.end(), value) == bindings.end()) {
+                bindings.push_back(value);
             }
-            return it->second;
         }
 
         bool axis_engaged(GamepadAxis axis)
@@ -49,25 +42,25 @@ namespace IronHull
     void Input::register_key_action(const std::string &action, KeyboardKey keyboard_key)
     {
         Input& self = Input::get_singleton();
-        get_or_create_action(self.actions, action).key = keyboard_key;
+        add_binding(get_or_create_action(self.actions, action).keys, keyboard_key);
     }
 
     void Input::register_mouse_action(const std::string &action, MouseButton mouse_button)
     {
         Input& self = Input::get_singleton();
-        get_or_create_action(self.actions, action).mouse = mouse_button;
+        add_binding(get_or_create_action(self.actions, action).mouse_buttons, mouse_button);
     }
 
     void Input::register_joybutton_action(const std::string &action, GamepadButton gamepad_button)
     {
         Input& self = Input::get_singleton();
-        get_or_create_action(self.actions, action).gamepad_button = gamepad_button;
+        add_binding(get_or_create_action(self.actions, action).gamepad_buttons, gamepad_button);
     }
 
     void Input::register_joyaxis_action(const std::string &action, GamepadAxis gamepad_axis)
     {
         Input& self = Input::get_singleton();
-        get_or_create_action(self.actions, action).gamepad_axis = gamepad_axis;
+        add_binding(get_or_create_action(self.actions, action).gamepad_axes, gamepad_axis);
     }
 
     bool Input::is_action_pressed(const std::string &action)
@@ -81,21 +74,30 @@ namespace IronHull
 
         const InputAction& binding = it->second;
 
-        if (binding.key != KEY_NULL && IsKeyDown(binding.key)) {
-            return true;
+        for (KeyboardKey key : binding.keys) {
+            if (IsKeyDown(key)) {
+                return true;
+            }
         }
 
-        if (binding.mouse >= 0 && IsMouseButtonDown(binding.mouse)) {
-            return true;
+        for (MouseButton mouse : binding.mouse_buttons) {
+            if (IsMouseButtonDown(mouse)) {
+                return true;
+            }
         }
 
-        if (binding.gamepad_button != GAMEPAD_BUTTON_UNKNOWN && IsGamepadAvailable(GAMEPAD_ID)
-            && IsGamepadButtonDown(GAMEPAD_ID, binding.gamepad_button)) {
-            return true;
+        if (IsGamepadAvailable(GAMEPAD_ID)) {
+            for (GamepadButton gamepad_button : binding.gamepad_buttons) {
+                if (IsGamepadButtonDown(GAMEPAD_ID, gamepad_button)) {
+                    return true;
+                }
+            }
         }
 
-        if (axis_engaged(binding.gamepad_axis)) {
-            return true;
+        for (GamepadAxis axis : binding.gamepad_axes) {
+            if (axis_engaged(axis)) {
+                return true;
+            }
         }
 
         return false;
@@ -112,17 +114,24 @@ namespace IronHull
 
         const InputAction& binding = it->second;
 
-        if (binding.key != KEY_NULL && IsKeyReleased(binding.key)) {
-            return true;
+        for (KeyboardKey key : binding.keys) {
+            if (IsKeyReleased(key)) {
+                return true;
+            }
         }
 
-        if (binding.mouse >= 0 && IsMouseButtonReleased(binding.mouse)) {
-            return true;
+        for (MouseButton mouse : binding.mouse_buttons) {
+            if (IsMouseButtonReleased(mouse)) {
+                return true;
+            }
         }
 
-        if (binding.gamepad_button != GAMEPAD_BUTTON_UNKNOWN && IsGamepadAvailable(GAMEPAD_ID)
-            && IsGamepadButtonReleased(GAMEPAD_ID, binding.gamepad_button)) {
-            return true;
+        if (IsGamepadAvailable(GAMEPAD_ID)) {
+            for (GamepadButton gamepad_button : binding.gamepad_buttons) {
+                if (IsGamepadButtonReleased(GAMEPAD_ID, gamepad_button)) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -139,17 +148,24 @@ namespace IronHull
 
         const InputAction& binding = it->second;
 
-        if (binding.key != KEY_NULL && IsKeyPressed(binding.key)) {
-            return true;
+        for (KeyboardKey key : binding.keys) {
+            if (IsKeyPressed(key)) {
+                return true;
+            }
         }
 
-        if (binding.mouse >= 0 && IsMouseButtonPressed(binding.mouse)) {
-            return true;
+        for (MouseButton mouse : binding.mouse_buttons) {
+            if (IsMouseButtonPressed(mouse)) {
+                return true;
+            }
         }
 
-        if (binding.gamepad_button != GAMEPAD_BUTTON_UNKNOWN && IsGamepadAvailable(GAMEPAD_ID)
-            && IsGamepadButtonPressed(GAMEPAD_ID, binding.gamepad_button)) {
-            return true;
+        if (IsGamepadAvailable(GAMEPAD_ID)) {
+            for (GamepadButton gamepad_button : binding.gamepad_buttons) {
+                if (IsGamepadButtonPressed(GAMEPAD_ID, gamepad_button)) {
+                    return true;
+                }
+            }
         }
 
         return false;
