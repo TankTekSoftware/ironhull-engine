@@ -60,16 +60,22 @@ namespace IronHull
             const b2ContactBeginTouchEvent& e = events.beginEvents[i];
             auto* a = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdA)));
             auto* b = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdB)));
-            if (a) a->on_collision_enter(b);
-            if (b) b->on_collision_enter(a);
+
+            if (a != b) {
+                if (a) a->on_collision_enter(b);
+                if (b) b->on_collision_enter(a);
+            }
         }
 
         for (int i = 0; i < events.endCount; ++i) {
             const b2ContactEndTouchEvent& e = events.endEvents[i];
             auto* a = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdA)));
             auto* b = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdB)));
-            if (a) a->on_collision_exit(b);
-            if (b) b->on_collision_exit(a);
+
+            if (a != b) {
+                if (a) a->on_collision_exit(b);
+                if (b) b->on_collision_exit(a);
+            }
         }
     }
 
