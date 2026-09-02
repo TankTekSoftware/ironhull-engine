@@ -14,5 +14,8 @@ namespace IronHull
             b2BodyId body_id;
         public:
             void init(const std::vector<CollisionShape2D*>& shapes, b2BodyType type);
+        public:
+            virtual void on_collision_enter(PhysicsBody2D* other) {}
+            virtual void on_collision_exit(PhysicsBody2D* other) {}
     };
 }
