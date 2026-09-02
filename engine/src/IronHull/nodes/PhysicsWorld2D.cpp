@@ -34,6 +34,7 @@ namespace IronHull
         accumulator += delta;
         while(accumulator >= time_step) {
             b2World_Step(this->world_id, time_step, sub_step_count);
+            this->process_contact_events();
             accumulator -= time_step;
         }
     }
