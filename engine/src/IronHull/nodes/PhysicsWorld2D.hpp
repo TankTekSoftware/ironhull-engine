@@ -19,5 +19,7 @@ namespace IronHull
             void step(float delta);
             void dispose();
             b2WorldId get_world_id() const;
+        private:
+            void process_contact_events();
     };
 }

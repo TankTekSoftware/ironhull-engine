@@ -1,4 +1,5 @@
 #include "IronHull/core/Application.hpp"
+#include "IronHull/nodes/PhysicsBody2D.hpp"
 #include "box2d/box2d.h"
 #include "box2d/id.h"
 #include "box2d/math_functions.h"
@@ -49,4 +50,27 @@ namespace IronHull
     {
         return this->world_id;
     }
+
+    void PhysicsWorld2D::process_contact_events()
+    {
+        b2ContactEvents events = b2World_GetContactEvents(this->world_id);
+
+        for (int i = 0; i < events.beginCount; ++i) {
+            const b2ContactBeginTouchEvent& e = events.beginEvents[i];
+            auto* a = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdA)));
+            auto* b = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdB)));
+            if (a) a->on_collision_enter(b);
+            if (b) b->on_collision_enter(a);
+        }
+
+        for (int i = 0; i < events.endCount; ++i) {
+            const b2ContactEndTouchEvent& e = events.endEvents[i];
+            auto* a = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdA)));
+            auto* b = static_cast<PhysicsBody2D*>(b2Body_GetUserData(b2Shape_GetBody(e.shapeIdB)));
+            if (a) a->on_collision_exit(b);
+            if (b) b->on_collision_exit(a);
+        }
+    }
+
+
 }

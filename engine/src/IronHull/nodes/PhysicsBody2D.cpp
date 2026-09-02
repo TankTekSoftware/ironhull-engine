@@ -15,16 +15,17 @@ namespace IronHull
     {
         PhysicsWorld2D* world = PhysicsWorld2D::get_singleton();
         
+        b2BodyDef body_def = b2DefaultBodyDef();
+        body_def.type = type;
+        body_def.position = DataUtils::to_box2d(this->position);
+        body_def.userData = this;
+        this->body_id = b2CreateBody(world->get_world_id(), &body_def);
+
         for (CollisionShape2D* shape : shapes) {
-            b2BodyDef body_def = b2DefaultBodyDef();
-            body_def.type = type;
-            body_def.position = DataUtils::to_box2d(this->position);
-
-            this->body_id = b2CreateBody(world->get_world_id(), &body_def);
-
             b2ShapeDef shape_def = b2DefaultShapeDef();
             shape_def.density = shape->density;
             shape_def.material.friction = shape->friction;
+            shape_def.enableContactEvents = true;
 
             switch (shape->shape_type) {
                 case IronHull::CollisionShapeType2D::BOX:
