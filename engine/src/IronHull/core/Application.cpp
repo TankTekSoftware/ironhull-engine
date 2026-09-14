@@ -47,6 +47,12 @@ namespace IronHull
         return self->instance->physics_2d;
     }
 
+    Physics3DSettings Application::get_physics3d()
+    {
+        Application* self = Application::instance;
+        return self->instance->physics_3d;
+    }
+
     void Application::run()
     {
         Application::instance = this;
@@ -66,6 +72,9 @@ namespace IronHull
         this->physics_2d = { 0 };
         this->physics_2d.gravity = { 0.0f, 9.8f };
         this->physics_2d.pixels_per_unit = 32.0f;
+
+        this->physics_3d = { 0 };
+        this->physics_3d.gravity = { 0.0f, -9.8f, 0.0f };
 
         this->project_name = "IronHullGame";
 

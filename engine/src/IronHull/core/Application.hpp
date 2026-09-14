@@ -28,6 +28,12 @@ namespace IronHull
         float pixels_per_unit = 32.0f;
     };
 
+    struct Physics3DSettings
+    {
+        // Box3D works in meters with no built-in up axis; raylib is Y-up.
+        Vector3 gravity = { 0.0f, -9.8f, 0.0f };
+    };
+
     class Application
     {
         private:
@@ -39,6 +45,7 @@ namespace IronHull
             Window window;
             Viewport viewport;
             Physics2DSettings physics_2d;
+            Physics3DSettings physics_3d;
             std::string project_name;
         public:
             static void quit();
@@ -47,6 +54,7 @@ namespace IronHull
             static Window get_window();
             static Viewport get_viewport();
             static Physics2DSettings get_physics2d();
+            static Physics3DSettings get_physics3d();
         public:
             Application() = default;
             ~Application() = default;

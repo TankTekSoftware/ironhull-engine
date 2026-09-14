@@ -36,6 +36,17 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(box2d)
 
+message(STATUS "Fetching box3d")
+set(BOX3D_SAMPLES OFF CACHE BOOL "" FORCE)
+set(BOX3D_TESTS OFF CACHE BOOL "" FORCE)
+set(BOX3D_DOCS OFF CACHE BOOL "" FORCE)
+FetchContent_Declare(
+    box3d
+    GIT_REPOSITORY "https://github.com/erincatto/box3d.git"
+    GIT_TAG "v0.1.0"
+)
+FetchContent_MakeAvailable(box3d)
+
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
@@ -50,4 +61,5 @@ target_link_libraries(${PROJECT_NAME}
         imgui
         PhysFS::PhysFS-static
         box2d
+        box3d
 )

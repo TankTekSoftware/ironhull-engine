@@ -9,6 +9,13 @@
 #include <IronHull/nodes/PhysicsBody2D.hpp>
 #include <IronHull/nodes/PhysicsWorld2D.hpp>
 
+#include <IronHull/nodes/CharacterBody3D.hpp>
+#include <IronHull/nodes/CollisionShape3D.hpp>
+#include <IronHull/nodes/Node3D.hpp>
+#include <IronHull/nodes/PhysicsBody3D.hpp>
+#include <IronHull/nodes/PhysicsWorld3D.hpp>
+#include <IronHull/nodes/StaticBody3D.hpp>
+
 #include <IronHull/render/RenderPass.hpp>
 
 #include <IronHull/scene/Scene.hpp>
