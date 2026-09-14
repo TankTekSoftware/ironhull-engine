@@ -8,24 +8,24 @@ namespace IronHull
 {
     struct Window
     {
-        int width;
-        int height;
-        std::string title;
-        bool resizable;
-        bool fullscreen;
-        int target_fps;
+        int width = 0;
+        int height = 0;
+        std::string title = "";
+        bool resizable = 0;
+        bool fullscreen = 0;
+        int target_fps = 0;
     };
 
     struct Viewport
     {
-        int width;
-        int height;
+        int width = 0;
+        int height = 0;
     };
 
     struct Physics2DSettings
     {
-        Vector2 gravity; 
-        float pixels_per_unit;
+        Vector2 gravity = { 0.0f, 1.0f }; 
+        float pixels_per_unit = 32.0f;
     };
 
     class Application
