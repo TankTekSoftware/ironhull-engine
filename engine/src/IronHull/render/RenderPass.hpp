@@ -4,6 +4,6 @@ namespace IronHull
 {
     enum class RenderPass
     {
-        VIEWPORT, SCREEN, DEBUG 
+        VIEWPORT, SCREEN, IMGUI 
     };
 }

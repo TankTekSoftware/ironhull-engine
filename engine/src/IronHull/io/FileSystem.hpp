@@ -10,8 +10,8 @@ namespace IronHull
     // callbacks so raylib's own Load*()/Save*() functions can read and write through it
     // transparently.
     //
-    //   assets://path  Read-only, packaged with the app: a loose "assets/" directory next
-    //                   to the executable in debug builds, or a PhysFS-mounted "assets.ihpk"
+    //   content://path  Read-only, packaged with the app: a loose "content/" directory next
+    //                   to the executable in debug builds, or a PhysFS-mounted "content.ihpk"
     //                   archive next to the executable in release (NDEBUG) builds.
     //
     //   user://path     Writable, per-user application data directory:

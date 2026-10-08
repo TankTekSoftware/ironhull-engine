@@ -13,19 +13,19 @@ namespace IronHull
 {
     namespace
     {
-        // Backing store for "assets://": a loose "assets/" directory in debug builds, or an
-        // "assets.ihpk" archive in release (NDEBUG) builds, mounted at PhysFS's virtual root
+        // Backing store for "content://": a loose "content/" directory in debug builds, or an
+        // "content.ihpk" archive in release (NDEBUG) builds, mounted at PhysFS's virtual root
         // by init(). PhysFS auto-detects the archive format, so the same mount/read calls
         // work for both cases.
-        bool g_assets_mounted = false;
+        bool g_content_mounted = false;
 
         // Backing store for "user://": a plain writable directory on disk.
         std::string g_user_dir;
 
         enum class Protocol
         {
-            Assets,
-            User,
+            CONTENT,
+            USER,
         };
 
         struct ParsedUri
@@ -36,18 +36,18 @@ namespace IronHull
 
         ParsedUri parse_uri(const std::string& uri)
         {
-            static const std::string assets_protocol = "assets://";
+            static const std::string content_protocol = "content://";
             static const std::string user_protocol = "user://";
 
-            if (uri.compare(0, assets_protocol.size(), assets_protocol) == 0) {
-                return { Protocol::Assets, uri.substr(assets_protocol.size()) };
+            if (uri.compare(0, content_protocol.size(), content_protocol) == 0) {
+                return { Protocol::CONTENT, uri.substr(content_protocol.size()) };
             }
 
             if (uri.compare(0, user_protocol.size(), user_protocol) == 0) {
-                return { Protocol::User, uri.substr(user_protocol.size()) };
+                return { Protocol::USER, uri.substr(user_protocol.size()) };
             }
 
-            throw std::invalid_argument("FileSystem: path '" + uri + "' does not use a recognized protocol (expected 'assets://' or 'user://')");
+            throw std::invalid_argument("FileSystem: path '" + uri + "' does not use a recognized protocol (expected 'content://' or 'user://')");
         }
 
         std::string user_disk_path(const std::string& relative_path)
@@ -80,11 +80,11 @@ namespace IronHull
             return true;
         }
 
-        std::vector<unsigned char> read_assets_file(const std::string& uri, const std::string& relative_path)
+        std::vector<unsigned char> read_content_file(const std::string& uri, const std::string& relative_path)
         {
             PHYSFS_File* file = PHYSFS_openRead(relative_path.c_str());
             if (file == nullptr) {
-                throw std::runtime_error("FileSystem: failed to read '" + uri + "' from assets: " +
+                throw std::runtime_error("FileSystem: failed to read '" + uri + "' from content: " +
                     PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
             }
 
@@ -101,7 +101,7 @@ namespace IronHull
                 if (read != length) {
                     std::string error = PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode());
                     PHYSFS_close(file);
-                    throw std::runtime_error("FileSystem: failed to read '" + uri + "' from assets: " + error);
+                    throw std::runtime_error("FileSystem: failed to read '" + uri + "' from content: " + error);
                 }
             }
 
@@ -120,15 +120,15 @@ namespace IronHull
         std::string app_dir = GetApplicationDirectory();
 
 #ifdef NDEBUG
-        std::string assets_source = app_dir + "assets.ihpk";
+        std::string content_source = app_dir + "content.ihpk";
 #else
-        std::string assets_source = app_dir + "assets";
+        std::string content_source = app_dir + "content";
 #endif
 
-        if (PHYSFS_mount(assets_source.c_str(), "/", 1)) {
-            g_assets_mounted = true;
+        if (PHYSFS_mount(content_source.c_str(), "/", 1)) {
+            g_content_mounted = true;
         } else {
-            TraceLog(LOG_WARNING, "FILESYSTEM: Failed to mount assets '%s': %s", assets_source.c_str(),
+            TraceLog(LOG_WARNING, "FILESYSTEM: Failed to mount content '%s': %s", content_source.c_str(),
                 PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
         }
 
@@ -155,7 +155,7 @@ namespace IronHull
         SetSaveFileTextCallback(nullptr);
 
         PHYSFS_deinit();
-        g_assets_mounted = false;
+        g_content_mounted = false;
 
         g_user_dir.clear();
     }
@@ -180,8 +180,8 @@ namespace IronHull
     {
         ParsedUri parsed = parse_uri(uri);
 
-        if (parsed.protocol == Protocol::Assets) {
-            return g_assets_mounted && PHYSFS_exists(parsed.relative_path.c_str()) != 0;
+        if (parsed.protocol == Protocol::CONTENT) {
+            return g_content_mounted && PHYSFS_exists(parsed.relative_path.c_str()) != 0;
         }
 
         std::error_code ec;
@@ -192,12 +192,12 @@ namespace IronHull
     {
         ParsedUri parsed = parse_uri(uri);
 
-        if (parsed.protocol == Protocol::Assets) {
-            if (!g_assets_mounted) {
-                throw std::runtime_error("FileSystem: failed to read '" + uri + "': assets are not mounted");
+        if (parsed.protocol == Protocol::CONTENT) {
+            if (!g_content_mounted) {
+                throw std::runtime_error("FileSystem: failed to read '" + uri + "': content are not mounted");
             }
 
-            return read_assets_file(uri, parsed.relative_path);
+            return read_content_file(uri, parsed.relative_path);
         }
 
         std::vector<unsigned char> data;
@@ -211,7 +211,7 @@ namespace IronHull
     {
         ParsedUri parsed = parse_uri(uri);
 
-        if (parsed.protocol != Protocol::User) {
+        if (parsed.protocol != Protocol::USER) {
             throw std::runtime_error("FileSystem: '" + uri + "' is read-only (only 'user://' paths can be written)");
         }
 
