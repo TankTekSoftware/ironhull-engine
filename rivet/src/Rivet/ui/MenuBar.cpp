@@ -114,9 +114,16 @@ namespace Rivet
     void MenuBar::draw_debug_menu()
     {
         if (ImGui::BeginMenu("Debug")) {
-            if (ImGui::MenuItem("Run")) {
-                // TODO: Open the editor settings.
+            if (ImGui::MenuItem("Compile")) {
+                // TODO: Compile all registered maps
             }
+            if (ImGui::MenuItem("Run")) {
+                // TODO: Run from start map without compiling (e.g. main_menu)
+            }
+            if (ImGui::MenuItem("Run Current Map")) {
+                // TODO: Run the currently opened map.
+            }
+            
             ImGui::EndMenu();
         }
     }

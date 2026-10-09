@@ -3,7 +3,8 @@
 
 #include <Rivet/ui/MenuBar.hpp>
 
-#include <Rivet/panel/EntitiesPanel.hpp>
+#include <Rivet/panel/MapLayoutPanel.hpp>
+#include <Rivet/panel/ConsolePanel.hpp>
 #include <Rivet/panel/InspectorPanel.hpp>
 #include <Rivet/panel/AssetPanel.hpp>
 #include <Rivet/panel/ViewportPanel.hpp>
@@ -14,7 +15,9 @@ class RivetApp : public IronHull::Application
 {
     private:
         Rivet::MenuBar* menu_bar;    
-        Rivet::EntitiesPanel* entities_panel;
+
+        Rivet::MapLayoutPanel* map_layout_panel;
+        Rivet::ConsolePanel* console_panel;
         Rivet::InspectorPanel* inspector_panel;
         Rivet::AssetPanel* asset_panel;
 
@@ -38,8 +41,9 @@ class RivetApp : public IronHull::Application
 
             this->menu_bar = new Rivet::MenuBar();
             
+            this->map_layout_panel = new Rivet::MapLayoutPanel();
             this->inspector_panel = new Rivet::InspectorPanel();
-            this->entities_panel = new Rivet::EntitiesPanel();
+            this->console_panel = new Rivet::ConsolePanel();
             this->asset_panel = new Rivet::AssetPanel();
             this->viewport_panel = new Rivet::ViewportPanel();
 
@@ -72,7 +76,8 @@ class RivetApp : public IronHull::Application
                 this->menu_bar->draw();
                 
                 // --- DRAW PANELS --- //
-                this->entities_panel->draw();
+                this->map_layout_panel->draw();
+                this->console_panel->draw();
                 this->inspector_panel->draw();
                 this->asset_panel->draw();
 
@@ -87,7 +92,8 @@ class RivetApp : public IronHull::Application
         {
             delete this->menu_bar;
 
-            delete this->entities_panel;
+            delete this->map_layout_panel;
+            delete this->console_panel;
             delete this->inspector_panel;
             delete this->asset_panel;
 

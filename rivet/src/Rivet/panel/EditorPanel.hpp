@@ -12,7 +12,7 @@ namespace Rivet
             std::string title;
             ImGuiWindowFlags flags;
         public:
-            EditorPanel(const std::string& title, ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize);
+            EditorPanel(const std::string& title, ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse);
             virtual ~EditorPanel();
         protected:
             virtual void on_draw() = 0;

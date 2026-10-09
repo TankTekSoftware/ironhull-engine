@@ -23,8 +23,8 @@ namespace Rivet
         const ImVec4 border       = ImVec4(0.196f, 0.208f, 0.235f, 1.00f); // #32353c
         const ImVec4 text         = ImVec4(0.890f, 0.898f, 0.910f, 1.00f); // #e3e5e8
         const ImVec4 subtext      = ImVec4(0.545f, 0.565f, 0.600f, 1.00f); // #8b9099
-        const ImVec4 accent       = ImVec4(0.310f, 0.561f, 0.969f, 1.00f); // #4f8ff7
-        const ImVec4 accent_light = ImVec4(0.420f, 0.631f, 0.976f, 1.00f); // #6ba1f9
+        const ImVec4 accent       = ImVec4(0.310f, 0.969f, 0.475f, 1.00f); // #4ff779
+        const ImVec4 accent_light = ImVec4(0.420f, 0.976f, 0.494f, 1.00f); // #6bf97e
 
         ImVec4* colors = ImGui::GetStyle().Colors;
 

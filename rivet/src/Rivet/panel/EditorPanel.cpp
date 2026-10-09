@@ -15,7 +15,7 @@ namespace Rivet
 
     void EditorPanel::draw()
     {
-        ImGui::Begin(this->title.c_str()); 
+        ImGui::Begin(this->title.c_str(), NULL, this->flags); 
         {
             this->on_draw();
         }   

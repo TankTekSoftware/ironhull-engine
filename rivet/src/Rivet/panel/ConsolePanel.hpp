@@ -4,10 +4,10 @@
 
 namespace Rivet
 {
-    class EntitiesPanel : public EditorPanel
+    class ConsolePanel : public EditorPanel
     {
         public:
-            EntitiesPanel();
+            ConsolePanel();
         protected:
             void on_draw() override;
     };

@@ -25,7 +25,7 @@ namespace Rivet
     void EditorSettingsPopup::default_theme_settings()
     {
         this->theme = EditorTheme::THEME_DEFAULT;
-        this->ui_scale = 1.5f;
+        this->ui_scale = 1.0f;
         this->window_rounding = 6.0f;
         this->frame_rounding = 6.0f;
     }
