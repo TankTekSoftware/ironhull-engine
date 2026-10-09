@@ -1,4 +1,4 @@
-#include <Rivet/utils/ImGuiFileInput.hpp>
+#include <Rivet/widget/ImGuiFileInput.hpp>
 
 #include <cstring>
 
@@ -7,8 +7,11 @@
 
 namespace Rivet
 {
-    ImGuiFileInput::ImGuiFileInput(const std::string& label, FileInputMode mode) : label(label), mode(mode)
+    ImGuiFileInput::ImGuiFileInput(const std::string& label, FileInputMode mode)
     {
+        this->label = label;
+        this->mode = mode;
+        
         this->clear();
     }
 

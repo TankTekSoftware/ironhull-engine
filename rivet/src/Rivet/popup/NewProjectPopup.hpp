@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Rivet/popup/EditorPopup.hpp>
-#include <Rivet/utils/ImGuiFileInput.hpp>
+#include <Rivet/widget/ImGuiFileInput.hpp>
 
 namespace Rivet
 {

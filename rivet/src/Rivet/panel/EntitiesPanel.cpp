@@ -12,6 +12,6 @@ namespace Rivet
 
     void EntitiesPanel::on_draw()
     {
-        ImGui::Text("TODO: Implement Entities Panel.");
+        
     }
 }

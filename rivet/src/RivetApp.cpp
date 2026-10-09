@@ -4,18 +4,19 @@
 #include <Rivet/ui/MenuBar.hpp>
 
 #include <Rivet/panel/EntitiesPanel.hpp>
-
-#include <Rivet/popup/NewProjectPopup.hpp>
-#include <Rivet/popup/ProjectSettingsPopup.hpp>
+#include <Rivet/panel/InspectorPanel.hpp>
+#include <Rivet/panel/AssetPanel.hpp>
+#include <Rivet/panel/ViewportPanel.hpp>
 
 class RivetApp : public IronHull::Application
 {
     private:
         Rivet::MenuBar* menu_bar;    
         Rivet::EntitiesPanel* entities_panel;
+        Rivet::InspectorPanel* inspector_panel;
+        Rivet::AssetPanel* asset_panel;
+        Rivet::ViewportPanel* viewport_panel;
 
-        Rivet::NewProjectPopup* new_project_popup;
-        Rivet::ProjectSettingsPopup* project_settings_popup;
     protected:
         void on_compose() override
         {
@@ -32,10 +33,10 @@ class RivetApp : public IronHull::Application
 
             this->menu_bar = new Rivet::MenuBar();
             
+            this->inspector_panel = new Rivet::InspectorPanel();
             this->entities_panel = new Rivet::EntitiesPanel();
-
-            this->new_project_popup = new Rivet::NewProjectPopup();
-            this->project_settings_popup = new Rivet::ProjectSettingsPopup();
+            this->asset_panel = new Rivet::AssetPanel();
+            this->viewport_panel = new Rivet::ViewportPanel();
         }
 
         void on_ready() override
@@ -43,8 +44,7 @@ class RivetApp : public IronHull::Application
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
             // --- REGISTER MENU BAR CALLBACKS --- //
-            this->menu_bar->set_open_new_project([this]() { this->new_project_popup->open(); });
-            this->menu_bar->set_open_project_settings([this]() { this->project_settings_popup->open(); });
+
         }
 
         void on_update(float delta) override
@@ -62,20 +62,25 @@ class RivetApp : public IronHull::Application
                 
                 // --- DRAW PANELS --- //
                 this->entities_panel->draw();
+                this->inspector_panel->draw();
+                this->asset_panel->draw();
+
+                this->viewport_panel->draw();
 
                 // --- DRAW POPUPS --- //
-                this->new_project_popup->draw();
-                this->project_settings_popup->draw();
+                
             }
         }
 
         void on_dispose() override
         {
             delete this->menu_bar;
-            delete this->entities_panel;
 
-            delete this->new_project_popup;
-            delete this->project_settings_popup;
+            delete this->entities_panel;
+            delete this->inspector_panel;
+            delete this->asset_panel;
+
+            delete this->viewport_panel;
         }
 };
 
