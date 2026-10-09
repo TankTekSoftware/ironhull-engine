@@ -6,8 +6,6 @@
 [![Issues][issues-shield]][issues-url]
 [![Unlicense License][license-shield]][license-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -31,52 +29,32 @@
   </p>
 </div>
 
-
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This isn't an engine in the traditional sense. There is no editor. 
+This isn't an engine in the traditional sense. There is no entity component system or scene graph.
+
+### Platform Compatability
+IronHull currently supports the following platforms:
+* Windows
+* macOS
+* Linux
+
+In the future IronHull plans to support:
+- Android
+- iOS
+- WASM (Web Assembly)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
-This section lists all vendors and tools IronHull was built using.
+This section lists all languages, vendors and tools IronHull was built using.
 
 * C++20
 * C17
 * [Emscripten](https://emscripten.org/)
 * [Ninja](https://ninja-build.org/)
-* [CMake](https://cmake.org/) 
-* [RayLib](https://www.raylib.com/)
-* [Box2D](https://box2d.org/)
+* [CMake](https://cmake.org/)
+* [RayLib](https://www.raylib.com/) 
 * [PhysFS](https://icculus.org/physfs/)
 * [ImGui](https://github.com/ocornut/imgui)
 
