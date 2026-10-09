@@ -1,41 +1,41 @@
-#include <Rivet/popup/NewProjectPopup.hpp>
+#include <Rivet/popup/ProjectManagerPopup.hpp>
 
 namespace Rivet
 {
-    NewProjectPopup::NewProjectPopup() : EditorPopup("New Project")
+    ProjectManagerPopup::ProjectManagerPopup() : EditorPopup("Rivet Project Manager")
     {
         this->project_location = new ImGuiFileInput("Project Location", FileInputMode::MODE_FOLDER);
         this->default_options();
     }
 
-    NewProjectPopup::~NewProjectPopup()
+    ProjectManagerPopup::~ProjectManagerPopup()
     {
         delete this->project_location;
     }
 
-    void NewProjectPopup::default_options()
+    void ProjectManagerPopup::default_options()
     {
         this->project_name[0] = '\0';
         this->project_location->clear();
         this->project_template = ProjectTemplate::TEMPLATE_EMPTY;
     }
 
-    bool NewProjectPopup::is_valid() const
+    bool ProjectManagerPopup::is_valid() const
     {
         return this->project_name[0] != '\0' && !this->project_location->is_empty();
     }
 
-    void NewProjectPopup::create_project()
+    void ProjectManagerPopup::create_project()
     {
 
     }
 
-    void NewProjectPopup::on_open()
+    void ProjectManagerPopup::on_open()
     {
         this->default_options();
     }
 
-    void NewProjectPopup::on_draw()
+    void ProjectManagerPopup::on_draw()
     {
         ImGui::InputText("Project Name", this->project_name, IM_ARRAYSIZE(this->project_name));
 
@@ -45,7 +45,7 @@ namespace Rivet
         this->draw_action_buttons();
     }
 
-    void NewProjectPopup::draw_project_templates()
+    void ProjectManagerPopup::draw_project_templates()
     {
         ImGui::Text("Project Template");
         if (ImGui::RadioButton("Empty", this->project_template == ProjectTemplate::TEMPLATE_EMPTY)) {
@@ -61,7 +61,7 @@ namespace Rivet
         }
     }
 
-    void NewProjectPopup::draw_action_buttons()
+    void ProjectManagerPopup::draw_action_buttons()
     {
         ImGui::BeginDisabled(!this->is_valid());
         if (ImGui::Button("Create")) {

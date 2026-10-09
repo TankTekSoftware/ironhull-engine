@@ -12,15 +12,15 @@ namespace Rivet
         TEMPLATE_THIRD_PERSON,
     };
 
-    class NewProjectPopup : public Rivet::EditorPopup
+    class ProjectManagerPopup : public Rivet::EditorPopup
     {
         private:
             char project_name[128];
             ImGuiFileInput* project_location;
             ProjectTemplate project_template;
         public:
-            NewProjectPopup();
-            ~NewProjectPopup();
+            ProjectManagerPopup();
+            ~ProjectManagerPopup();
         private:
             void default_options();
             bool is_valid() const;
