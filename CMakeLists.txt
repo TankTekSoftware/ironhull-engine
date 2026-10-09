@@ -41,3 +41,9 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/lua/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/runtime/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/rivet/)
+
+# Content tools are build-time utilities that run on the developer's machine, so there is
+# nothing to gain from cross-compiling them to wasm alongside a web build.
+if(NOT PLATFORM STREQUAL "Web")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tools/ihbsp/)
+endif()

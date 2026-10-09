@@ -36,6 +36,15 @@ namespace IronHull
             static std::vector<unsigned char> read_bytes(const std::string& uri);
             static bool write_bytes(const std::string& uri, const void* data, size_t size);
 
+        public:
+            // The files directly inside a directory, as full URIs ready to pass back to
+            // read_bytes(). Subdirectories are not listed and not descended into.
+            //
+            // This is how a subsystem discovers content it was not told about by name - the
+            // entity registry loading every script in `content://entities/`, for instance.
+            // A missing directory is not an error; it lists as empty.
+            static std::vector<std::string> list_files(const std::string& uri_directory);
+
         private:
             static std::string user_data_directory(const std::string& project_name);
 

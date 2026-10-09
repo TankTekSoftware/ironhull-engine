@@ -97,7 +97,9 @@ local Zombie = {
     inputs = {
         Damage = {
             description = "Subtract the given amount of health.",
-            parameter = { type = "int", display = "Amount" },
+            parameters = {
+                { type = "int", display = "Amount" }
+            },
         },
         Kill = { description = "Kill the zombie immediately." },
         Wake = { description = "Wake a zombie that spawned asleep." },

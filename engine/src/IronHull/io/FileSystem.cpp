@@ -207,6 +207,61 @@ namespace IronHull
         return data;
     }
 
+    std::vector<std::string> FileSystem::list_files(const std::string& uri_directory)
+    {
+        ParsedUri parsed = parse_uri(uri_directory);
+
+        // Normalize away a trailing slash so that joining a filename on below never produces
+        // a doubled separator, which PhysFS would reject.
+        std::string relative = parsed.relative_path;
+        while (!relative.empty() && (relative.back() == '/' || relative.back() == '\\')) {
+            relative.pop_back();
+        }
+
+        std::string prefix = (parsed.protocol == Protocol::CONTENT ? "content://" : "user://")
+            + (relative.empty() ? std::string() : relative + "/");
+
+        std::vector<std::string> files;
+
+        if (parsed.protocol == Protocol::CONTENT) {
+            if (!g_content_mounted) {
+                return files;
+            }
+
+            char** entries = PHYSFS_enumerateFiles(relative.c_str());
+            if (entries == nullptr) {
+                return files;
+            }
+
+            for (char** entry = entries; *entry != nullptr; ++entry) {
+                std::string child = relative.empty() ? std::string(*entry) : relative + "/" + *entry;
+
+                PHYSFS_Stat stat;
+                if (PHYSFS_stat(child.c_str(), &stat) != 0 && stat.filetype == PHYSFS_FILETYPE_REGULAR) {
+                    files.push_back(prefix + *entry);
+                }
+            }
+
+            PHYSFS_freeList(entries);
+            return files;
+        }
+
+        std::error_code ec;
+        std::filesystem::directory_iterator iterator(user_disk_path(relative), ec);
+
+        if (ec) {
+            return files;
+        }
+
+        for (const std::filesystem::directory_entry& entry : iterator) {
+            if (entry.is_regular_file(ec)) {
+                files.push_back(prefix + entry.path().filename().string());
+            }
+        }
+
+        return files;
+    }
+
     bool FileSystem::write_bytes(const std::string& uri, const void* data, size_t size)
     {
         ParsedUri parsed = parse_uri(uri);
