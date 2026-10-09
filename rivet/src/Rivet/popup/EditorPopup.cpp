@@ -2,10 +2,12 @@
 
 namespace Rivet
 {
-    EditorPopup::EditorPopup(const std::string& title, ImGuiWindowFlags flags)
+    EditorPopup::EditorPopup(const std::string& title, const ImVec2& initial_size, const ImVec2& min_size, ImGuiWindowFlags flags)
     {
         this->title = title;
         this->flags = flags;
+        this->initial_size = initial_size;
+        this->min_size = min_size;
         this->visible = false;
         this->open_requested = false;
 
@@ -36,6 +38,12 @@ namespace Rivet
         }
 
         bool was_visible = this->visible;
+
+        // FirstUseEver so a size the user resized to (saved in imgui.ini) wins over the initial size.
+        if (this->initial_size.x > 0.0f && this->initial_size.y > 0.0f) {
+            ImGui::SetNextWindowSize(this->initial_size, ImGuiCond_FirstUseEver);
+        }
+        ImGui::SetNextWindowSizeConstraints(this->min_size, ImVec2(FLT_MAX, FLT_MAX));
 
         if (ImGui::BeginPopupModal(this->title.c_str(), &this->visible, this->flags)) {
             this->on_draw();

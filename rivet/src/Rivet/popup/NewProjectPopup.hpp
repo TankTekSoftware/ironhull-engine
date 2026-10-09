@@ -16,12 +16,13 @@ namespace Rivet
     {
         private:
             char project_name[128];
-            ImGuiFileInput project_location;
+            ImGuiFileInput* project_location;
             ProjectTemplate project_template;
         public:
             NewProjectPopup();
+            ~NewProjectPopup();
         private:
-            void initialize();
+            void default_options();
             bool is_valid() const;
             void create_project();
         protected:

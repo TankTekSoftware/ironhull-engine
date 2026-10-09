@@ -11,12 +11,20 @@ namespace Rivet
         protected:
             std::string title;
             ImGuiWindowFlags flags;
+            ImVec2 initial_size;
+            ImVec2 min_size;
         private:
             bool visible;
             bool open_requested;
             bool active;
         public:
-            EditorPopup(const std::string& title, ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize);
+            // A zero initial_size auto-fits the popup to its content the first time it opens.
+            EditorPopup(
+                const std::string& title,
+                const ImVec2& initial_size = ImVec2(0.0f, 0.0f),
+                const ImVec2& min_size = ImVec2(0.0f, 0.0f),
+                ImGuiWindowFlags flags = ImGuiWindowFlags_None
+            );
             virtual ~EditorPopup();
         protected:
             virtual void on_draw() = 0;

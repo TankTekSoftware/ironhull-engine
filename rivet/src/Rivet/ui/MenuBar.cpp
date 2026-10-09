@@ -22,6 +22,8 @@ namespace Rivet
         if (ImGui::BeginMainMenuBar()) {
             this->draw_map_menu();
             this->draw_project_menu();
+            this->draw_debug_menu();
+            this->draw_editor_menu();
 
             ImGui::EndMainMenuBar();
         }
@@ -109,14 +111,29 @@ namespace Rivet
         }
     }
 
-    void MenuBar::draw_editor_menu()
+    void MenuBar::draw_debug_menu()
     {
-        if (ImGui::BeginMenu("Editor")) {
-            if (ImGui::MenuItem("Editor Settings")) {
+        if (ImGui::BeginMenu("Debug")) {
+            if (ImGui::MenuItem("Run")) {
                 // TODO: Open the editor settings.
             }
             ImGui::EndMenu();
         }
+    }
+
+    void MenuBar::draw_editor_menu()
+    {
+        if (ImGui::BeginMenu("Editor")) {
+            if (ImGui::MenuItem("Editor Settings")) {
+                this->on_open_editor_settings();
+            }
+            ImGui::EndMenu();
+        }
+    }
+
+    void MenuBar::set_open_editor_settings(const std::function<void()> callback)
+    {
+        this->on_open_editor_settings = callback;
     }
 }
 

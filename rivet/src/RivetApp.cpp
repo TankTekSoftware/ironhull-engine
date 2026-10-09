@@ -8,6 +8,8 @@
 #include <Rivet/panel/AssetPanel.hpp>
 #include <Rivet/panel/ViewportPanel.hpp>
 
+#include <Rivet/popup/EditorSettingsPopup.hpp>
+
 class RivetApp : public IronHull::Application
 {
     private:
@@ -15,7 +17,10 @@ class RivetApp : public IronHull::Application
         Rivet::EntitiesPanel* entities_panel;
         Rivet::InspectorPanel* inspector_panel;
         Rivet::AssetPanel* asset_panel;
+
         Rivet::ViewportPanel* viewport_panel;
+
+        Rivet::EditorSettingsPopup* editor_settings_popup;
 
     protected:
         void on_compose() override
@@ -37,14 +42,20 @@ class RivetApp : public IronHull::Application
             this->entities_panel = new Rivet::EntitiesPanel();
             this->asset_panel = new Rivet::AssetPanel();
             this->viewport_panel = new Rivet::ViewportPanel();
+
+            this->editor_settings_popup = new Rivet::EditorSettingsPopup();
         }
 
         void on_ready() override
         {
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-            // --- REGISTER MENU BAR CALLBACKS --- //
+            this->editor_settings_popup->apply_theme();
 
+            // --- REGISTER MENU BAR CALLBACKS --- //
+            this->menu_bar->set_open_editor_settings([this]() {
+                this->editor_settings_popup->open();
+            });
         }
 
         void on_update(float delta) override
@@ -68,7 +79,7 @@ class RivetApp : public IronHull::Application
                 this->viewport_panel->draw();
 
                 // --- DRAW POPUPS --- //
-                
+                this->editor_settings_popup->draw();
             }
         }
 
@@ -81,6 +92,8 @@ class RivetApp : public IronHull::Application
             delete this->asset_panel;
 
             delete this->viewport_panel;
+
+            delete this->editor_settings_popup;
         }
 };
 

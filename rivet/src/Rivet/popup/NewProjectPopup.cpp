@@ -2,21 +2,27 @@
 
 namespace Rivet
 {
-    NewProjectPopup::NewProjectPopup() : EditorPopup("New Project"), project_location("Project Location", FileInputMode::MODE_FOLDER)
+    NewProjectPopup::NewProjectPopup() : EditorPopup("New Project")
     {
-        this->initialize();
+        this->project_location = new ImGuiFileInput("Project Location", FileInputMode::MODE_FOLDER);
+        this->default_options();
     }
 
-    void NewProjectPopup::initialize()
+    NewProjectPopup::~NewProjectPopup()
+    {
+        delete this->project_location;
+    }
+
+    void NewProjectPopup::default_options()
     {
         this->project_name[0] = '\0';
-        this->project_location.clear();
+        this->project_location->clear();
         this->project_template = ProjectTemplate::TEMPLATE_EMPTY;
     }
 
     bool NewProjectPopup::is_valid() const
     {
-        return this->project_name[0] != '\0' && !this->project_location.is_empty();
+        return this->project_name[0] != '\0' && !this->project_location->is_empty();
     }
 
     void NewProjectPopup::create_project()
@@ -26,14 +32,14 @@ namespace Rivet
 
     void NewProjectPopup::on_open()
     {
-        this->initialize();
+        this->default_options();
     }
 
     void NewProjectPopup::on_draw()
     {
         ImGui::InputText("Project Name", this->project_name, IM_ARRAYSIZE(this->project_name));
 
-        this->project_location.draw();
+        this->project_location->draw();
 
         this->draw_project_templates();
         this->draw_action_buttons();

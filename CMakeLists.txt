@@ -39,4 +39,5 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/lua/)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/runtime/)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/rivet/)
